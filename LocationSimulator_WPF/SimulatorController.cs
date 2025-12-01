@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using LocationSimulator_WPF;
 
 /// <summary>
@@ -11,14 +13,29 @@ public class SimulatorController
     private UdpSender _udpSender; 
     public SimulatorController()
     {
-        _udpSender = new UdpSender(System.Net.IPAddress.Loopback, 5000);
+        _udpSender = new UdpSender(System.Net.IPAddress.Loopback, 11000);
         InitializeSensors();
+        RegistForEvent();
     }
 
+    private void RegistForEvent()
+    {
+        foreach (var sensor in Sensors)
+        {
+            sensor.OnReadingAvailable += OnSensorReadingAvailable;
+        }
+    }
     private void InitializeSensors()
     {
         var gps = new GpsSensor { IntervalMs = 500 };
         Sensors.Add(gps);
+    }
+
+    public void OnSensorReadingAvailable(object? sender, ReadingArrivedEventArgs e)
+    {
+        byte[] datagram = e.ReadingData.ToJsonBytes();
+        _udpSender.Send(datagram);
+
     }
 
     public void StartAll()
