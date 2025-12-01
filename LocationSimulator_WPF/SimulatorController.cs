@@ -8,9 +8,10 @@ using LocationSimulator_WPF;
 public class SimulatorController
 {
     public ObservableCollection<INavigationSensor> Sensors { get; } = new ObservableCollection<INavigationSensor>();
-
+    private UdpSender _udpSender; 
     public SimulatorController()
     {
+        _udpSender = new UdpSender(System.Net.IPAddress.Loopback, 5000);
         InitializeSensors();
     }
 

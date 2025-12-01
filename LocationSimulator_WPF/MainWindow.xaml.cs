@@ -8,13 +8,13 @@ namespace LocationSimulator_WPF
     public partial class MainWindow : Window
     {
         private SimulatorController _controller;
-        private SenderLocation _senderLocation;
+        private UdpSender _senderLocation;
         public MainWindow()
         {
             InitializeComponent();
 
             _controller = new SimulatorController();
-            _senderLocation = new SenderLocation();
+            _senderLocation = new UdpSender();
 
             foreach (var sensor in _controller.Sensors)
             {
